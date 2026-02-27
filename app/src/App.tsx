@@ -41,7 +41,7 @@ function App() {
   const [, setSelectedAgent] = useState<Agent | null>(null)
   const [markets, setMarkets] = useState<any[]>([])
 
-  const API_URL = 'https://agent-market-backend-50kf.onrender.com'
+  const API_URL = 'https://agent-market-backend-production.up.railway.app'
 
   // 获取系统状态
   const fetchStatus = async () => {
