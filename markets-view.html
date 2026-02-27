@@ -243,7 +243,7 @@
     <button class="refresh-btn" onclick="loadMarkets()">🔄 刷新数据</button>
 
     <script>
-        const API_URL = 'http://localhost:8000';
+        const API_URL = 'https://agent-market-backend-50kf.onrender.com';
         
         function formatMoney(amount) {
             if (amount >= 1000000) return '$' + (amount / 1000000).toFixed(1) + 'M';
@@ -358,7 +358,7 @@
                     <div class="empty">
                         <div class="empty-icon">❌</div>
                         <p>加载失败: ${error.message}</p>
-                        <p>请确保后端服务正在运行 (http://localhost:8000)</p>
+                        <p>请确保后端服务正在运行 (https://agent-market-backend-50kf.onrender.com)</p>
                     </div>
                 `;
             }
