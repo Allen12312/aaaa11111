@@ -1,11 +1,7 @@
 # Railway 部署配置
-# 这个文件告诉 Railway 如何运行后端
-
 [build]
 builder = "nixpacks"
 
 [deploy]
 startCommand = "cd agent-backend && uvicorn main:app --host 0.0.0.0 --port $PORT"
-healthcheckPath = "/api/status"
-healthcheckTimeout = 100
 restartPolicyType = "on_failure"
