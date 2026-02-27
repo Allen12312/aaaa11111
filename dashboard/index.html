@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent预测市场 - 监控面板</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f172a;
+            color: #fff;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+        }
+        .header h1 { font-size: 28px; margin-bottom: 10px; }
+        .header p { opacity: 0.9; }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+        }
+        .stat-card h3 {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #fff;
+        }
+        .agents {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .agent-card {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+        }
+        .agent-card h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .agent-type {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .discovery { background: #3b82f6; }
+        .listing { background: #10b981; }
+        .audit { background: #f59e0b; }
+        .market_maker { background: #8b5cf6; }
+        .trading { background: #ec4899; }
+        .governance { background: #f97316; }
+        .agent-list {
+            list-style: none;
+        }
+        .agent-list li {
+            padding: 10px;
+            background: #0f172a;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .agent-name { font-weight: 500; }
+        .agent-stats {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        .markets {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+        }
+        .markets h2 {
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        .market-list {
+            list-style: none;
+        }
+        .market-list li {
+            padding: 15px;
+            background: #0f172a;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+        .market-title { font-weight: 500; margin-bottom: 5px; }
+        .market-meta {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        .controls {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border: none;
+            padding: 15px 40px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .btn:hover { transform: scale(1.05); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .logs {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            margin-top: 30px;
+        }
+        .logs h2 { margin-bottom: 15px; }
+        .log-content {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .status-online { color: #10b981; }
+        .status-offline { color: #ef4444; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🤖 AI Agent 预测市场平台</h1>
+        <p>六大Agent协作的预测市场系统</p>
+    </div>
+
+    <div class="controls">
+        <button class="btn" onclick="runCycle()">🚀 运行一个周期</button>
+        <button class="btn" onclick="fetchData()">🔄 刷新数据</button>
+    </div>
+
+    <div class="stats" id="stats">
+        <div class="stat-card">
+            <h3>总Agent数</h3>
+            <div class="value" id="totalAgents">-</div>
+        </div>
+        <div class="stat-card">
+            <h3>运行周期</h3>
+            <div class="value" id="cycleCount">-</div>
+        </div>
+        <div class="stat-card">
+            <h3>活跃市场</h3>
+            <div class="value" id="marketCount">-</div>
+        </div>
+        <div class="stat-card">
+            <h3>消息队列</h3>
+            <div class="value" id="messageCount">-</div>
+        </div>
+    </div>
+
+    <div class="agents" id="agents">
+        <!-- Agent列表将在这里显示 -->
+    </div>
+
+    <div class="markets">
+        <h2>📊 活跃市场</h2>
+        <ul class="market-list" id="marketList">
+            <!-- 市场将在这里显示 -->
+        </ul>
+    </div>
+
+    <div class="logs">
+        <h2>📜 系统日志</h2>
+        <div class="log-content" id="logs">
+            等待运行...
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8000';
+        let logs = [];
+
+        function addLog(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            logs.unshift(`[${timestamp}] ${message}`);
+            if (logs.length > 50) logs.pop();
+            document.getElementById('logs').innerHTML = logs.join('<br>');
+        }
+
+        async function fetchData() {
+            try {
+                addLog('正在获取数据...');
+                
+                // 获取系统状态
+                const statusRes = await fetch(`${API_URL}/api/status`);
+                const status = await statusRes.json();
+                
+                document.getElementById('totalAgents').textContent = 
+                    Object.values(status.agent_counts).reduce((a, b) => a + b, 0);
+                document.getElementById('cycleCount').textContent = status.cycle_count;
+                document.getElementById('marketCount').textContent = status.market_count;
+                document.getElementById('messageCount').textContent = status.message_queue_size;
+
+                // 显示Agent
+                const agentsDiv = document.getElementById('agents');
+                agentsDiv.innerHTML = '';
+                
+                const agentTypes = {
+                    discovery: '发现Agent',
+                    listing: '上架Agent', 
+                    audit: '审核Agent',
+                    market_maker: '做市Agent',
+                    trading: '交易Agent',
+                    governance: '治理Agent'
+                };
+
+                for (const [type, agents] of Object.entries(status.agents)) {
+                    if (agents.length === 0) continue;
+                    
+                    const card = document.createElement('div');
+                    card.className = 'agent-card';
+                    
+                    const agentList = agents.map(agent => `
+                        <li>
+                            <span class="agent-name">${agent.name}</span>
+                            <span class="agent-stats">
+                                行动: ${agent.performance.total_actions} | 
+                                成功: ${agent.performance.successful_actions} | 
+                                收益: $${agent.performance.total_profit.toFixed(0)}
+                            </span>
+                        </li>
+                    `).join('');
+                    
+                    card.innerHTML = `
+                        <h3><span class="agent-type ${type}"></span> ${agentTypes[type]}</h3>
+                        <ul class="agent-list">${agentList}</ul>
+                    `;
+                    
+                    agentsDiv.appendChild(card);
+                }
+
+                // 获取市场
+                const marketsRes = await fetch(`${API_URL}/api/markets`);
+                const markets = await marketsRes.json();
+                
+                const marketList = document.getElementById('marketList');
+                marketList.innerHTML = markets.slice(0, 10).map(m => `
+                    <li>
+                        <div class="market-title">${m.market_title || '未命名市场'}</div>
+                        <div class="market-meta">
+                            类别: ${m.category} | 
+                            流动性: $${(m.initial_liquidity || 0).toLocaleString()} | 
+                            状态: ${m.status}
+                        </div>
+                    </li>
+                `).join('') || '<li>暂无市场</li>';
+
+                addLog('数据更新成功');
+            } catch (error) {
+                addLog(`错误: ${error.message}`);
+            }
+        }
+
+        async function runCycle() {
+            try {
+                addLog('🚀 开始运行周期...');
+                const res = await fetch(`${API_URL}/api/cycle/run`, { method: 'POST' });
+                const data = await res.json();
+                
+                if (data.success) {
+                    addLog(`✅ 周期 ${data.cycle} 完成`);
+                    addLog(`📊 发现:${data.summary.discovery_count}, 上架:${data.summary.listing_count}, 审核:${data.summary.audit_count}`);
+                    fetchData();
+                } else {
+                    addLog('❌ 周期运行失败');
+                }
+            } catch (error) {
+                addLog(`错误: ${error.message}`);
+            }
+        }
+
+        // 初始加载
+        fetchData();
+        
+        // 自动刷新
+        setInterval(fetchData, 5000);
+    </script>
+</body>
+</html>

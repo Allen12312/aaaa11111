@@ -1,0 +1,86 @@
+{
+  "generated_at": "2026-02-27T23:50:06.778083",
+  "total_packages": 5,
+  "packages": [
+    {
+      "package_id": "PKG-001",
+      "discovered_at": "2026-02-27T23:50:06.777030",
+      "discovered_by": "DiscoveryAgent-v1",
+      "status": "READY_FOR_LISTING",
+      "event": {
+        "title": "Anthropic会与国防部达成合作吗？",
+        "category": "tech",
+        "description": "Dario Amodei与国防部讨论AI合作事宜，引发业界关注",
+        "why_hot": "AI安全与军事应用的敏感话题，HN热度2495",
+        "why_debatable": "AI伦理vs国家安全，观点两极分化",
+        "deadline": "2025-06-30",
+        "data_sources": "Anthropic官方公告, 国防部新闻稿",
+        "source": "Hacker News - Dario Amodei声明"
+      }
+    },
+    {
+      "package_id": "PKG-002",
+      "discovered_at": "2026-02-27T23:50:06.777046",
+      "discovered_by": "DiscoveryAgent-v1",
+      "status": "READY_FOR_LISTING",
+      "event": {
+        "title": "比特币会在2025年突破15万美元吗？",
+        "category": "crypto",
+        "description": "比特币ETF通过后价格走势预测",
+        "why_hot": "加密货币市场焦点，机构资金大量流入",
+        "why_debatable": "牛市派预测$15万+，熊市派认为泡沫",
+        "deadline": "2025-12-31",
+        "data_sources": "CoinMarketCap, Coinbase",
+        "source": "加密货币市场数据"
+      }
+    },
+    {
+      "package_id": "PKG-003",
+      "discovered_at": "2026-02-27T23:50:06.777050",
+      "discovered_by": "DiscoveryAgent-v1",
+      "status": "READY_FOR_LISTING",
+      "event": {
+        "title": "OpenAI会在2025年发布GPT-5吗？",
+        "category": "tech",
+        "description": "GPT-5发布时间预测，Altman多次暗示",
+        "why_hot": "AI领域最受期待的事件",
+        "why_debatable": "竞争对手压力vs技术成熟度",
+        "deadline": "2025-12-31",
+        "data_sources": "OpenAI官方公告",
+        "source": "AI行业新闻"
+      }
+    },
+    {
+      "package_id": "PKG-004",
+      "discovered_at": "2026-02-27T23:50:06.777053",
+      "discovered_by": "DiscoveryAgent-v1",
+      "status": "READY_FOR_LISTING",
+      "event": {
+        "title": "特朗普会赢得2024年美国总统大选吗？",
+        "category": "politics",
+        "description": "2024年11月美国总统大选结果",
+        "why_hot": "全球最受关注的政治事件",
+        "why_debatable": "民调胶着，摇摆州结果难料",
+        "deadline": "2024-11-05",
+        "data_sources": "美国各州选举委员会",
+        "source": "政治新闻"
+      }
+    },
+    {
+      "package_id": "PKG-005",
+      "discovered_at": "2026-02-27T23:50:06.777056",
+      "discovered_by": "DiscoveryAgent-v1",
+      "status": "READY_FOR_LISTING",
+      "event": {
+        "title": "美联储会在2024年12月降息吗？",
+        "category": "finance",
+        "description": "美联储利率决议预期",
+        "why_hot": "影响全球金融市场",
+        "why_debatable": "通胀回落vs就业强劲，信号矛盾",
+        "deadline": "2024-12-18",
+        "data_sources": "美联储官方公告",
+        "source": "财经新闻"
+      }
+    }
+  ]
+}

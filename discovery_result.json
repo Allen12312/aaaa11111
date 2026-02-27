@@ -1,0 +1,52 @@
+{
+  "discovered_at": "2026-02-27T23:38:32.079914",
+  "agent": "DiscoveryAgent-v1",
+  "total_events": 5,
+  "events": [
+    {
+      "title": "特朗普会赢得2024年美国总统大选吗？",
+      "category": "politics",
+      "description": "2024年11月5日美国总统大选，特朗普与哈里斯对决",
+      "deadline": "2024-11-05",
+      "why_hot": "全球最受关注的政治事件，民调胶着",
+      "why_debatable": "双方支持率接近，结果难以预测",
+      "data_sources": "美国各州选举结果官方公布"
+    },
+    {
+      "title": "比特币会在2024年底前突破10万美元吗？",
+      "category": "crypto",
+      "description": "比特币减半后价格走势，能否突破10万美元大关",
+      "deadline": "2024-12-31",
+      "why_hot": "加密货币市场焦点，机构资金大量流入",
+      "why_debatable": "牛市派vs熊市派观点分歧大",
+      "data_sources": "CoinMarketCap, Coinbase"
+    },
+    {
+      "title": "美联储会在2024年12月降息吗？",
+      "category": "finance",
+      "description": "美联储利率决议，12月是否会宣布降息",
+      "deadline": "2024-12-18",
+      "why_hot": "影响全球金融市场，投资者高度关注",
+      "why_debatable": "通胀数据与就业数据信号矛盾",
+      "data_sources": "美联储官方公告"
+    },
+    {
+      "title": "OpenAI会在2025年上半年发布GPT-5吗？",
+      "category": "tech",
+      "description": "GPT-5发布时间预测，OpenAI是否会在2025年上半年发布",
+      "deadline": "2025-06-30",
+      "why_hot": "AI领域最受期待的事件",
+      "why_debatable": "Altman暗示与竞争对手压力",
+      "data_sources": "OpenAI官方公告"
+    },
+    {
+      "title": "曼城会赢得2024-2025赛季英超冠军吗？",
+      "category": "sports",
+      "description": "英超联赛冠军预测，曼城能否卫冕",
+      "deadline": "2025-05-25",
+      "why_hot": "英超是全球最受关注的足球联赛",
+      "why_debatable": "利物浦、阿森纳紧追不舍",
+      "data_sources": "英超官方积分榜"
+    }
+  ]
+}

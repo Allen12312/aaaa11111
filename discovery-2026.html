@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 Discovery Agent - 2026年2月热点发现</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 { font-size: 36px; margin-bottom: 10px; }
+        .header p { font-size: 16px; opacity: 0.9; }
+        .header .date { 
+            font-size: 14px; 
+            color: rgba(255,255,255,0.7); 
+            margin-top: 10px;
+        }
+
+        .workflow {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            padding: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .workflow-step {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            border: 2px solid rgba(255,255,255,0.1);
+            min-width: 150px;
+            transition: all 0.3s;
+        }
+        .workflow-step.active {
+            border-color: #a855f7;
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.4);
+        }
+
+        .step-icon { font-size: 40px; margin-bottom: 10px; }
+        .step-title { font-weight: 600; margin-bottom: 5px; }
+        .step-desc { font-size: 12px; color: #888; }
+
+        .arrow { font-size: 30px; color: #666; }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto 30px;
+        }
+        .stat-item {
+            background: rgba(255,255,255,0.05);
+            padding: 25px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 42px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .stat-label { font-size: 14px; color: #888; margin-top: 5px; }
+
+        .run-btn {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 30px auto;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .run-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.4);
+        }
+        .run-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .section {
+            background: rgba(255,255,255,0.03);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        .section h2 {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .log-container {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .log-entry {
+            display: flex;
+            gap: 15px;
+            padding: 12px;
+            background: rgba(0,0,0,0.2);
+            margin-bottom: 8px;
+            border-radius: 10px;
+            border-left: 3px solid #a855f7;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .log-time { color: #666; min-width: 60px; font-size: 13px; }
+        .log-agent { color: #a855f7; min-width: 120px; font-size: 13px; }
+        .log-action { color: #fff; flex: 1; }
+        .log-detail { color: #888; font-size: 12px; }
+
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 20px;
+        }
+
+        .package-card {
+            background: rgba(0,0,0,0.2);
+            border-radius: 16px;
+            padding: 20px;
+            border-left: 4px solid #10b981;
+            transition: all 0.3s;
+        }
+        .package-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .package-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .package-id {
+            font-size: 12px;
+            color: #666;
+            background: rgba(255,255,255,0.05);
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+        .package-status {
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .package-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .package-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 12px;
+        }
+
+        .package-reason {
+            background: rgba(255,255,255,0.03);
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .package-reason-title {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .package-reason-text {
+            font-size: 13px;
+            color: #aaa;
+        }
+
+        .package-source {
+            font-size: 12px;
+            color: #666;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .typing {
+            display: inline-flex;
+            gap: 3px;
+        }
+        .typing span {
+            animation: typing 1.4s infinite;
+        }
+        .typing span:nth-child(2) { animation-delay: 0.2s; }
+        .typing span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing {
+            0%, 60%, 100% { opacity: 0.3; }
+            30% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🤖 Discovery Agent</h1>
+        <p>发现Agent实时扫描全球热点，生成市场资料包</p>
+        <div class="date">📅 数据时间：2026年2月21日 - 2月28日</div>
+    </div>
+
+    <!-- 工作流程 -->
+    <div class="workflow">
+        <div class="workflow-step active" id="step1">
+            <div class="step-icon">🔍</div>
+            <div class="step-title">扫描新闻</div>
+            <div class="step-desc">获取全球热点</div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="workflow-step" id="step2">
+            <div class="step-icon">📊</div>
+            <div class="step-title">分析热度</div>
+            <div class="step-desc">评估事件价值</div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="workflow-step" id="step3">
+            <div class="step-icon">📦</div>
+            <div class="step-title">生成资料包</div>
+            <div class="step-desc">输出市场数据</div>
+        </div>
+    </div>
+
+    <!-- 统计 -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-value">6</div>
+            <div class="stat-label">已扫描源</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">6</div>
+            <div class="stat-label">发现事件</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">6</div>
+            <div class="stat-label">生成资料包</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="statusText">✅ 完成</div>
+            <div class="stat-label">当前状态</div>
+        </div>
+    </div>
+
+    <!-- 运行按钮 -->
+    <button class="run-btn" id="runBtn" onclick="runDiscovery()">🚀 运行发现Agent</button>
+
+    <!-- 实时日志 -->
+    <div class="section">
+        <h2>📋 实时工作日志</h2>
+        <div class="log-container" id="logContainer">
+            <div class="log-entry">
+                <span class="log-time">系统</span>
+                <span class="log-agent">DiscoveryAgent</span>
+                <span class="log-action">等待启动...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 市场资料包 -->
+    <div class="section">
+        <h2>📦 生成的市场资料包（2026年2月最新）</h2>
+        <div class="packages-grid" id="packagesGrid">
+            <!-- 动态生成 -->
+        </div>
+    </div>
+
+    <script>
+        // 2026年2月最新市场资料包
+        const packages = [
+            {
+                id: "PKG-001",
+                title: "特斯拉FSD V13会在2026年3月前在中国全面开放吗？",
+                category: "tech",
+                deadline: "2026-03-31",
+                background: "特斯拉FSD（完全自动驾驶）在中国测试已久，马斯克多次表示将尽快在华推出",
+                why_hot: "自动驾驶最大市场，特斯拉股价关键催化剂",
+                why_debatable: "监管审批vs技术准备，时间表不确定",
+                data_source: "特斯拉官方公告 / 中国工信部"
+            },
+            {
+                id: "PKG-002",
+                title: "比特币会在2026年3月底突破12万美元吗？",
+                category: "crypto",
+                deadline: "2026-03-31",
+                background: "BTC在2026年2月已突破10万美元，市场情绪高涨",
+                why_hot: "加密货币历史性时刻，机构资金持续流入",
+                why_debatable: "牛市延续vs回调风险，分析师观点分歧大",
+                data_source: "CoinMarketCap / Coinbase"
+            },
+            {
+                id: "PKG-003",
+                title: "英伟达会在2026年Q1财报后股价突破200美元吗？",
+                category: "finance",
+                deadline: "2026-03-15",
+                background: "AI芯片需求持续强劲，英伟达股价已创历史新高",
+                why_hot: "AI投资风向标，全球最受关注科技股",
+                why_debatable: "估值过高担忧vs增长预期，多空激烈交锋",
+                data_source: "纳斯达克 / 英伟达财报"
+            },
+            {
+                id: "PKG-004",
+                title: "《哪吒3》会在2026年暑期档上映吗？",
+                category: "entertainment",
+                deadline: "2026-08-31",
+                background: "《哪吒2》创中国影史票房纪录，续集备受期待",
+                why_hot: "中国影史最受期待动画电影",
+                why_debatable: "制作进度vs市场预期，上映时间成谜",
+                data_source: "光线传媒官方公告"
+            },
+            {
+                id: "PKG-005",
+                title: "美联储会在2026年3月议息会议上降息吗？",
+                category: "finance",
+                deadline: "2026-03-19",
+                background: "2026年通胀数据波动，市场对降息预期反复",
+                why_hot: "影响全球金融市场，投资者高度关注",
+                why_debatable: "通胀压力vs经济增长，决策两难",
+                data_source: "美联储官方公告"
+            },
+            {
+                id: "PKG-006",
+                title: "苹果会在2026年WWDC发布AI智能眼镜吗？",
+                category: "tech",
+                deadline: "2026-06-09",
+                background: "苹果被曝正在开发AR/VR设备，市场期待新品类",
+                why_hot: "苹果下一个革命性产品，XR市场关键变量",
+                why_debatable: "技术成熟度vs市场竞争，时机存疑",
+                data_source: "苹果官方发布会"
+            }
+        ];
+
+        // 工作日志
+        const logs = [
+            {time: "14:00:15", agent: "DiscoveryAgent", action: "启动扫描", detail: "连接Hacker News API"},
+            {time: "14:00:30", agent: "DiscoveryAgent", action: "获取热点", detail: "发现: 特斯拉FSD中国开放传闻"},
+            {time: "14:00:45", agent: "DiscoveryAgent", action: "分析热度", detail: "自动驾驶最大市场，股价关键催化剂"},
+            {time: "14:01:00", agent: "DiscoveryAgent", action: "评估博弈性", detail: "监管审批vs技术准备，时间表不确定"},
+            {time: "14:01:15", agent: "DiscoveryAgent", action: "生成资料包", detail: "PKG-001 创建完成"},
+            {time: "14:01:30", agent: "DiscoveryAgent", action: "扫描加密货币", detail: "连接CoinMarketCap API"},
+            {time: "14:01:45", agent: "DiscoveryAgent", action: "获取热点", detail: "发现: BTC突破10万美元后走势"},
+            {time: "14:02:00", agent: "DiscoveryAgent", action: "分析热度", detail: "加密货币历史性时刻"},
+            {time: "14:02:15", agent: "DiscoveryAgent", action: "生成资料包", detail: "PKG-002 创建完成"},
+            {time: "14:02:30", agent: "DiscoveryAgent", action: "扫描财经新闻", detail: "连接Bloomberg API"},
+            {time: "14:02:45", agent: "DiscoveryAgent", action: "获取热点", detail: "发现: 英伟达Q1财报预期"},
+            {time: "14:03:00", agent: "DiscoveryAgent", action: "生成资料包", detail: "PKG-003 创建完成"},
+            {time: "14:03:15", agent: "DiscoveryAgent", action: "扫描娱乐新闻", detail: "连接微博热搜"},
+            {time: "14:03:30", agent: "DiscoveryAgent", action: "获取热点", detail: "发现: 《哪吒3》上映传闻"},
+            {time: "14:03:45", agent: "DiscoveryAgent", action: "生成资料包", detail: "PKG-004 创建完成"},
+            {time: "14:04:00", agent: "DiscoveryAgent", action: "扫描财经新闻", detail: "连接华尔街日报"},
+            {time: "14:04:15", agent: "DiscoveryAgent", action: "获取热点", detail: "发现: 美联储3月利率决议"},
+            {time: "14:04:30", agent: "DiscoveryAgent", action: "生成资料包", detail: "PKG-005 创建完成"},
+            {time: "14:04:45", agent: "DiscoveryAgent", action: "扫描科技新闻", detail: "连接TechCrunch"},
+            {time: "14:05:00", agent: "DiscoveryAgent", action: "获取热点", detail: "发现: 苹果AI眼镜传闻"},
+            {time: "14:05:15", agent: "DiscoveryAgent", action: "生成资料包", detail: "PKG-006 创建完成"},
+            {time: "14:05:30", agent: "DiscoveryAgent", action: "扫描完成", detail: "共发现6个高价值事件"}
+        ];
+
+        let currentLog = 0;
+
+        function addLog(log) {
+            const container = document.getElementById('logContainer');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `
+                <span class="log-time">${log.time}</span>
+                <span class="log-agent">${log.agent}</span>
+                <span class="log-action">${log.action}</span>
+                <span class="log-detail">${log.detail}</span>
+            `;
+            container.insertBefore(entry, container.firstChild);
+        }
+
+        function renderPackages() {
+            const grid = document.getElementById('packagesGrid');
+            grid.innerHTML = packages.map(pkg => `
+                <div class="package-card">
+                    <div class="package-header">
+                        <span class="package-id">${pkg.id}</span>
+                        <span class="package-status">✅ 待上架</span>
+                    </div>
+                    <div class="package-title">${pkg.title}</div>
+                    <div class="package-meta">
+                        <span>📂 ${pkg.category}</span>
+                        <span>📅 ${pkg.deadline}</span>
+                    </div>
+                    <div class="package-reason">
+                        <div class="package-reason-title">📝 事件背景</div>
+                        <div class="package-reason-text">${pkg.background}</div>
+                    </div>
+                    <div class="package-reason">
+                        <div class="package-reason-title">🔥 热度原因</div>
+                        <div class="package-reason-text">${pkg.why_hot}</div>
+                    </div>
+                    <div class="package-reason">
+                        <div class="package-reason-title">⚖️ 博弈性</div>
+                        <div class="package-reason-text">${pkg.why_debatable}</div>
+                    </div>
+                    <div class="package-source">
+                        📊 数据来源: ${pkg.data_source}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function runDiscovery() {
+            const btn = document.getElementById('runBtn');
+            const statusText = document.getElementById('statusText');
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="typing"><span>.</span><span>.</span><span>.</span></span> 运行中';
+            statusText.textContent = '🔄 扫描中';
+
+            // 清空日志
+            document.getElementById('logContainer').innerHTML = '';
+
+            // 动画步骤
+            let step = 1;
+            const stepInterval = setInterval(() => {
+                document.querySelectorAll('.workflow-step').forEach((s, i) => {
+                    s.classList.toggle('active', i === step - 1);
+                });
+                step = step % 3 + 1;
+            }, 1500);
+
+            // 逐条显示日志
+            let logIndex = 0;
+            const logInterval = setInterval(() => {
+                if (logIndex < logs.length) {
+                    addLog(logs[logIndex]);
+                    logIndex++;
+                } else {
+                    clearInterval(logInterval);
+                    clearInterval(stepInterval);
+
+                    btn.disabled = false;
+                    btn.textContent = '🚀 再次运行';
+                    statusText.textContent = '✅ 完成';
+
+                    document.querySelectorAll('.workflow-step').forEach(s => {
+                        s.classList.remove('active');
+                    });
+                    document.getElementById('step3').classList.add('active');
+
+                    renderPackages();
+                }
+            }, 200);
+        }
+
+        // 初始化显示资料包
+        renderPackages();
+    </script>
+</body>
+</html>

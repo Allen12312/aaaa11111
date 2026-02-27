@@ -1,0 +1,61 @@
+{
+  "generated_at": "2026-02-28",
+  "period": "2026年2月21日-28日",
+  "total_events": 6,
+  "events": [
+    {
+      "title": "特斯拉FSD V13会在2026年3月前在中国全面开放吗？",
+      "category": "tech",
+      "background": "特斯拉FSD（完全自动驾驶）在中国测试已久，马斯克多次表示将尽快在华推出",
+      "why_hot": "自动驾驶最大市场，特斯拉股价关键催化剂",
+      "why_debatable": "监管审批vs技术准备，时间表不确定",
+      "deadline": "2026-03-31",
+      "data_source": "特斯拉官方公告 / 中国工信部"
+    },
+    {
+      "title": "比特币会在2026年3月底突破12万美元吗？",
+      "category": "crypto",
+      "background": "BTC在2026年2月已突破10万美元，市场情绪高涨",
+      "why_hot": "加密货币历史性时刻，机构资金持续流入",
+      "why_debatable": "牛市延续vs回调风险，分析师观点分歧大",
+      "deadline": "2026-03-31",
+      "data_source": "CoinMarketCap / Coinbase"
+    },
+    {
+      "title": "英伟达会在2026年Q1财报后股价突破200美元吗？",
+      "category": "finance",
+      "background": "AI芯片需求持续强劲，英伟达股价已创历史新高",
+      "why_hot": "AI投资风向标，全球最受关注科技股",
+      "why_debatable": "估值过高担忧vs增长预期，多空激烈交锋",
+      "deadline": "2026-03-15",
+      "data_source": "纳斯达克 / 英伟达财报"
+    },
+    {
+      "title": "《哪吒3》会在2026年暑期档上映吗？",
+      "category": "entertainment",
+      "background": "《哪吒2》创中国影史票房纪录，续集备受期待",
+      "why_hot": "中国影史最受期待动画电影",
+      "why_debatable": "制作进度vs市场预期，上映时间成谜",
+      "deadline": "2026-08-31",
+      "data_source": "光线传媒官方公告"
+    },
+    {
+      "title": "美联储会在2026年3月议息会议上降息吗？",
+      "category": "finance",
+      "background": "2026年通胀数据波动，市场对降息预期反复",
+      "why_hot": "影响全球金融市场，投资者高度关注",
+      "why_debatable": "通胀压力vs经济增长，决策两难",
+      "deadline": "2026-03-19",
+      "data_source": "美联储官方公告"
+    },
+    {
+      "title": "苹果会在2026年WWDC发布AI智能眼镜吗？",
+      "category": "tech",
+      "background": "苹果被曝正在开发AR/VR设备，市场期待新品类",
+      "why_hot": "苹果下一个革命性产品，XR市场关键变量",
+      "why_debatable": "技术成熟度vs市场竞争，时机存疑",
+      "deadline": "2026-06-09",
+      "data_source": "苹果官方发布会"
+    }
+  ]
+}

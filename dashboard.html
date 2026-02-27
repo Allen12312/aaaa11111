@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 AgentHub - AI预测市场监控中心</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 { font-size: 32px; margin-bottom: 10px; }
+        .header p { font-size: 16px; opacity: 0.9; }
+        
+        .status-bar {
+            background: rgba(255,255,255,0.1);
+            padding: 15px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .status-text { font-size: 14px; color: #aaa; }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+        }
+        .btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn:hover { transform: scale(1.05); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .stat-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #4facfe;
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #888;
+        }
+        
+        .section {
+            background: rgba(255,255,255,0.03);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .section h2 {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        .agent-card {
+            background: rgba(0,0,0,0.2);
+            padding: 20px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .agent-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        .agent-info { flex: 1; }
+        .agent-name { font-weight: bold; margin-bottom: 5px; }
+        .agent-type { font-size: 12px; color: #888; }
+        .agent-actions {
+            text-align: right;
+            font-size: 20px;
+            font-weight: bold;
+            color: #4facfe;
+        }
+        
+        .markets-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 15px;
+        }
+        .market-card {
+            background: rgba(0,0,0,0.2);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 4px solid #4facfe;
+        }
+        .market-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .market-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 10px;
+        }
+        .market-creator { color: #4facfe; }
+        .liquidity-bar {
+            height: 30px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .liquidity-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .log-container {
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 13px;
+        }
+        .log-item {
+            padding: 10px;
+            margin-bottom: 8px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            border-left: 3px solid #4facfe;
+        }
+        .log-time { font-size: 11px; color: #666; margin-bottom: 3px; }
+        
+        .error-message {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .error-message h3 { color: #ef4444; margin-bottom: 10px; }
+        .error-message p { color: #aaa; font-size: 14px; }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #888;
+        }
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top-color: #4facfe;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🤖 AgentHub</h1>
+        <p>AI Agent预测市场 - 核心4种Agent自运行系统</p>
+    </div>
+    
+    <div class="status-bar">
+        <div class="status-indicator">
+            <div class="status-dot"></div>
+            <span class="status-text" id="connectionStatus">正在连接后端...</span>
+        </div>
+        <div class="controls">
+            <button class="btn" onclick="runCycle()">🚀 运行周期</button>
+            <button class="btn" onclick="refreshData()">🔄 刷新</button>
+        </div>
+    </div>
+    
+    <div id="errorContainer"></div>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value" id="cycleCount">-</div>
+            <div class="stat-label">运行周期</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="marketCount">-</div>
+            <div class="stat-label">预测市场</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="totalLiquidity">-</div>
+            <div class="stat-label">总流动性</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="agentCount">-</div>
+            <div class="stat-label">Agent数量</div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>🤖 Agent工作状态</h2>
+        <div class="agent-grid" id="agentGrid">
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                <p>加载Agent数据...</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>📊 Agent创建的预测市场</h2>
+        <div class="markets-list" id="marketsList">
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                <p>加载市场数据...</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>📋 系统日志</h2>
+        <div class="log-container" id="logContainer">
+            <div class="log-item">
+                <div class="log-time">系统启动</div>
+                <div>等待连接后端服务...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API配置 - 尝试多个可能的地址
+        const API_URLS = [
+            'http://localhost:8000',
+            'http://127.0.0.1:8000',
+            window.location.origin.replace(/:\d+$/, ':8000')
+        ];
+        let API_URL = API_URLS[0];
+        let isConnected = false;
+        
+        function formatMoney(amount) {
+            if (amount >= 1000000) return '$' + (amount / 1000000).toFixed(1) + 'M';
+            if (amount >= 1000) return '$' + (amount / 1000).toFixed(1) + 'K';
+            return '$' + amount;
+        }
+        
+        function addLog(message) {
+            const container = document.getElementById('logContainer');
+            const time = new Date().toLocaleTimeString();
+            const item = document.createElement('div');
+            item.className = 'log-item';
+            item.innerHTML = `<div class="log-time">${time}</div><div>${message}</div>`;
+            container.insertBefore(item, container.firstChild);
+            if (container.children.length > 20) {
+                container.lastChild.remove();
+            }
+        }
+        
+        function showError(message) {
+            document.getElementById('errorContainer').innerHTML = `
+                <div class="error-message">
+                    <h3>❌ 连接失败</h3>
+                    <p>${message}</p>
+                    <p style="margin-top:10px;font-size:12px;">请确保后端服务已启动: python3 main.py</p>
+                </div>
+            `;
+        }
+        
+        function clearError() {
+            document.getElementById('errorContainer').innerHTML = '';
+        }
+        
+        async function tryConnect() {
+            for (const url of API_URLS) {
+                try {
+                    const res = await fetch(`${url}/api/status`, { 
+                        method: 'GET',
+                        mode: 'cors',
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    if (res.ok) {
+                        API_URL = url;
+                        isConnected = true;
+                        document.getElementById('connectionStatus').textContent = `已连接: ${url}`;
+                        addLog('✅ 成功连接到后端服务');
+                        clearError();
+                        return true;
+                    }
+                } catch (e) {
+                    console.log(`尝试连接 ${url} 失败`);
+                }
+            }
+            isConnected = false;
+            document.getElementById('connectionStatus').textContent = '未连接';
+            showError('无法连接到后端服务，请确保后端已启动');
+            return false;
+        }
+        
+        async function fetchData() {
+            if (!isConnected) {
+                const connected = await tryConnect();
+                if (!connected) return;
+            }
+            
+            try {
+                const res = await fetch(`${API_URL}/api/status`);
+                const data = await res.json();
+                
+                document.getElementById('cycleCount').textContent = data.cycle_count;
+                document.getElementById('marketCount').textContent = data.market_count;
+                document.getElementById('agentCount').textContent = 
+                    Object.values(data.agent_counts).reduce((a, b) => a + b, 0);
+                
+                // 显示Agent
+                const agentGrid = document.getElementById('agentGrid');
+                agentGrid.innerHTML = '';
+                
+                const agentTypes = {
+                    discovery: { name: '发现Agent', icon: '🔍', color: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
+                    listing: { name: '上架Agent', icon: '📊', color: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)' },
+                    market_maker: { name: '做市Agent', icon: '💰', color: 'linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%)' },
+                    trading: { name: '交易Agent', icon: '📈', color: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' }
+                };
+                
+                for (const [type, agents] of Object.entries(data.agents)) {
+                    if (!agentTypes[type]) continue;
+                    const typeInfo = agentTypes[type];
+                    
+                    agents.forEach(agent => {
+                        const card = document.createElement('div');
+                        card.className = 'agent-card';
+                        card.innerHTML = `
+                            <div class="agent-icon" style="background: ${typeInfo.color}">${typeInfo.icon}</div>
+                            <div class="agent-info">
+                                <div class="agent-name">${agent.name}</div>
+                                <div class="agent-type">${typeInfo.name}</div>
+                            </div>
+                            <div class="agent-actions">${agent.performance.total_actions}</div>
+                        `;
+                        agentGrid.appendChild(card);
+                    });
+                }
+                
+                // 获取市场
+                const marketsRes = await fetch(`${API_URL}/api/markets`);
+                const markets = await marketsRes.json();
+                
+                const totalLiquidity = markets.reduce((sum, m) => sum + (m.initial_liquidity || 0), 0);
+                document.getElementById('totalLiquidity').textContent = formatMoney(totalLiquidity);
+                
+                // 显示市场
+                const marketsList = document.getElementById('marketsList');
+                if (markets.length === 0) {
+                    marketsList.innerHTML = '<div style="text-align:center;padding:30px;color:#888;">暂无市场</div>';
+                } else {
+                    marketsList.innerHTML = markets.slice(-12).reverse().map(m => `
+                        <div class="market-card">
+                            <div class="market-title">${m.market_title || '未命名市场'}</div>
+                            <div class="market-meta">
+                                <span>📂 ${m.category}</span>
+                                <span class="market-creator">👤 ${m.creator || '未知'}</span>
+                            </div>
+                            <div class="liquidity-bar">
+                                <div class="liquidity-fill" style="width: ${Math.min((m.initial_liquidity / 50000) * 100, 100)}%">
+                                    ${formatMoney(m.initial_liquidity || 0)}
+                                </div>
+                            </div>
+                            <div class="market-meta" style="margin-top:8px;">
+                                <span>📊 ${(m.initial_probability * 100).toFixed(0)}% 概率</span>
+                                <span>💸 ${(m.trading_fee * 100).toFixed(1)}% 手续费</span>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+                
+            } catch (error) {
+                console.error('获取数据失败:', error);
+                isConnected = false;
+                document.getElementById('connectionStatus').textContent = '连接断开';
+                showError('连接已断开，请刷新页面重试');
+            }
+        }
+        
+        async function runCycle() {
+            if (!isConnected) {
+                addLog('❌ 未连接到后端');
+                return;
+            }
+            
+            addLog('🚀 开始运行一个周期...');
+            try {
+                const res = await fetch(`${API_URL}/api/cycle/run`, { 
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    addLog(`✅ 周期 ${data.cycle} 完成`);
+                    addLog(`📊 发现:${data.summary.discovery_count} 上架:${data.summary.listing_count} 做市:${data.summary.market_maker_count} 交易:${data.summary.trading_count}`);
+                    fetchData();
+                }
+            } catch (error) {
+                addLog('❌ 运行失败: ' + error.message);
+            }
+        }
+        
+        function refreshData() {
+            addLog('🔄 刷新数据...');
+            fetchData();
+        }
+        
+        // 初始连接
+        tryConnect().then(() => {
+            if (isConnected) fetchData();
+        });
+        
+        // 自动刷新
+        setInterval(() => {
+            if (isConnected) fetchData();
+        }, 5000);
+    </script>
+</body>
+</html>
